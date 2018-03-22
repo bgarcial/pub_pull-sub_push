@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     zmq::socket_t sender(context, ZMQ_PUSH);
     sender.connect("tcp://localhost:5558");
 
-    string firstMessage = "Aja como vamos peersasass";
+    string firstMessage = "Hello peers";
 
     while(1) {
         zmq::message_t message(firstMessage.size()+1);
