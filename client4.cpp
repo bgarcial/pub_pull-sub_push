@@ -2,30 +2,26 @@
 #include <zmq.h>
 #include <iostream>
 #include "zhelpers.hpp"
-// #include <algorithm>   
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
     zmq::context_t context(1);
-    std::cout << "Sending message to NM Server…\n"
-              << std::endl; 
+    /*
+    std::cout << "Sending message to NM Server…\n" << std::endl; */
 
-    // Socket to subscribe to server too. Although in first instance
-    // I don't need receive messages by the moment
     zmq::socket_t subscriber(context, ZMQ_SUB);
     subscriber.connect("tcp://localhost:5557");
     subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
 
-    //  Socket to send messages to
     zmq::socket_t sender(context, ZMQ_PUSH);
     sender.connect("tcp://localhost:5558");
 
-    string firstMessage = "Hola, soy el emisor";
+    string firstMessage = "Hola, soy el cliente 4";
 
-    while(1) {
-
+    while (1)
+    {
         //  Wait for next request from client
         std::string string = s_recv(subscriber);
 
@@ -34,12 +30,10 @@ int main(int argc, char *argv[])
         // Do some 'work'
         sleep(1);
 
-        zmq::message_t message(firstMessage.size()+1);
-        //copy_n(firstMessage.c_str(), firstMessage.size()+1, reinterpret_cast<char *>(message.data()));
-        memcpy(message.data(), firstMessage.c_str(), firstMessage.size()+1);
+        //  Send reply back to client
+        zmq::message_t message(firstMessage.size() + 1);
+        memcpy(message.data(), firstMessage.c_str(), firstMessage.size() + 1);
+        // s_send(sender, "Hola soy un responder 1");
         sender.send(message);
     }
-    return 0;
 }
-
-
